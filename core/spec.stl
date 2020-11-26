@@ -1,0 +1,44 @@
+# predicates
+
+  speed_bnded := speed[t] < vmax  
+  RPM_bnded := RPM[t] < rpm_max
+
+  gear2 := (abs(gear[t] - 2)-.1) < 0 
+  gear3 := (abs(gear[t] - 3)-.1) < 0 
+
+
+# subformulas (next event)
+
+  shift2 := (not gear2) and ev_[0.01,.02](gear2)
+  shiftn3 := (gear3) and ev_[0.01,.02](not gear3)
+
+# formulas 
+
+  phi1 := (alw (speed[t]<speedmax)) and (alw (alat[t]<alatmax))  
+
+  phi2 :=(ev_[0, t1] (speed[t]>4)) and (alw (angle[t]< angel_max)) 
+  
+  phi3 :=(alw_[0,1.5](a_lat[t]<alatmax)) and (alw_[1.5,5](a_lat[t]>alatmin))
+  
+  phi4:= ev_[0,10](alw_[0,t1]((alat[t]>0.97*reqalat) and (alat[t]<1.03*reqalat)))
+
+  phi5 :=alw_[0,t1](alat[t]<amax)
+
+  psi11:=(alw (Angle_r[t]<rollmax)) and ((alw (yaw_r[t]<yawmax)) and (alw_[0,t1](a_lat[t]<alatmax)))
+  psi1:=(alw (Angle_r[t]<rollmax)) and ((alw (yaw_r[t]<yawmax)) and (alw (a_lat[t]<alatmax)))
+  psi2:=(alw (Y[t]<Ymax)) and ((alw (Fz[t]<Fzmax)) and (alw (a_heave[t]<heavemax) ))
+
+
+  phi6:=alw_[0,t1](m_pwr[t]<mmax)
+  phi7:=alw_[0,t1](e_pwr[t]<emax)
+
+
+  phi_vmaxmin := (alw_[0, 25] (speed[t]<vmax)) and (alw_[25, 50] (speed[t] > vmin))
+
+  phi_brake := (ev_[0, 25] ((speed[t]>100) and (alw (speed[t] > vmin)))) or (alw (speed[t]<100))
+
+  phi_100 := not ( (ev_[0, t1] (speed[t]>100)) and (alw (RPM[t]< rpm_min)) )  
+
+  phi_stay2  := alw ( shift2 => (alw_[0.04, t1+.04] (gear2) ))	
+
+  phi_return3 := alw ( shiftn3 => (alw_[0.1, t1+.1] (not gear3) ))
